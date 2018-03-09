@@ -1,10 +1,10 @@
 package main
 
-import(
+import (
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"encoding/json"
 )
 
 /* Create a, 'Person' struct object that will contain data.
@@ -13,22 +13,20 @@ import(
 */
 
 type Person struct {
-	ID string `json:"id, omitempty:`
-	Firstname string `json:"Firstname,omitempty"`
-	Lastname string `json:"Lastname,omitempty"`
-	Address *Address `json:"Address,omitempty"`
-
+	ID        string   `json:"id, omitempty:`
+	Firstname string   `json:"Firstname,omitempty"`
+	Lastname  string   `json:"Lastname,omitempty"`
+	Address   *Address `json:"Address,omitempty"`
 }
 
 /* Nested struct.
    Inside the Person struct, there's an Address property which is of type pointer,
    since omitempty will not work if not.
- */
+*/
 
 type Address struct {
-	City string `json:"city,omitempty"`
+	City  string `json:"city,omitempty"`
 	State string `json:"state,omitempty"`
-
 }
 
 var people []Person // Global public slice of Person
@@ -38,7 +36,7 @@ var people []Person // Global public slice of Person
 func GetPersonEndpoint(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	for _, item := range people {
-		if item.ID == params["id"] {      // if match is found, use the JSON encoder to display it
+		if item.ID == params["id"] { // if match is found, use the JSON encoder to display it
 			json.NewEncoder(w).Encode(item)
 			return
 		}
@@ -71,40 +69,13 @@ func DeletePersonEndpoint(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(people)
 }
 
-
-func main(){
+func main() {
 	router := mux.NewRouter()
 	people = append(people, Person{ID: "1", Firstname: "Sean", Lastname: "Lachhander", Address: &Address{City: "Clifton Park", State: "New York"}})
-	people = append(people, Person{ID: "2", Firstname: "Ian", Lastname: "Lachhander",})
+	people = append(people, Person{ID: "2", Firstname: "Ian", Lastname: "Lachhander"})
 	router.HandleFunc("/people", GetPeopleEndpoint).Methods("GET")
 	router.HandleFunc("/people/{id}", GetPersonEndpoint).Methods("GET")
 	router.HandleFunc("/people/{id}", CreatePersonEndpoint).Methods("POST")
 	router.HandleFunc("/people/{id}", DeletePersonEndpoint).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":12345", router))
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
