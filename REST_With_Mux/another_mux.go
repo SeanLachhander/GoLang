@@ -1,8 +1,6 @@
 package main
 
 import (
-	//"fmt"
-	//"encoding/json"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
